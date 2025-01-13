@@ -37,10 +37,13 @@ def model(classifier):
 classifier_lr = LogisticRegression(solver="lbfgs", max_iter=1000)
 model(classifier_lr)
 
-# testing
+# sample data - for testing
 sample_data = np.array([[24, 1, 0, 198, 0, 140, 0, 0, 2]])
+# two ways of predicting, either give exact or get result
 predicted_class = classifier_lr.predict(sample_data)
-
+predicted_proba = classifier_lr.predict_proba(sample_data)
+print(f"Probability of no heart failure: {predicted_proba[0][0]}")
+print(f"Probability of heart failure: {predicted_proba[0][1]}")
 if predicted_class == 1:
     print("Heart failure predicted.")
 else:
