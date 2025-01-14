@@ -14,6 +14,7 @@ import numpy as np
 data = pd.read_csv('heart.csv')
 data.head()
 
+# converts our nominal values -> ordinal values
 le = LabelEncoder()
 df1 = data.copy(deep = True)
 df1['Sex'] = le.fit_transform(df1['Sex'])
@@ -29,6 +30,7 @@ x_train, x_test, y_train, y_test = train_test_split(features, target, test_size 
 
 def model(classifier):
     classifier.fit(x_train,y_train)
+    # repeatedly input all training cases
     prediction = classifier.predict(x_test)
     cv = RepeatedStratifiedKFold(n_splits = 10,n_repeats = 3,random_state = 1)
     print("Accuracy : ",'{0:.2%}'.format(accuracy_score(y_test,prediction)))
@@ -39,11 +41,13 @@ model(classifier_lr)
 
 # sample data - for testing
 sample_data = np.array([[24, 1, 0, 198, 0, 140, 0, 0, 2]])
+
 # two ways of predicting, either give exact or get result
 predicted_class = classifier_lr.predict(sample_data)
 predicted_proba = classifier_lr.predict_proba(sample_data)
 print(f"Probability of no heart failure: {predicted_proba[0][0]}")
 print(f"Probability of heart failure: {predicted_proba[0][1]}")
+
 if predicted_class == 1:
     print("Heart failure predicted.")
 else:
