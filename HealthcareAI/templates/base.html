@@ -22,13 +22,32 @@
           <li class="nav-item">
             <a class="nav-link" href="/about">About</a>
           </li>
+          {% if not user.is_authenticated %}
           <li class="nav-item">
             <a class="nav-link" href="/accounts/login">Login</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="/accounts/signup">Signup</a>
+             <a class="nav-link" href="/accounts/signup">Signup</a>
+          </li>
+          {% endif %}
+          {% if user.is_authenticated %}
+          <li class="nav-item">
+            <a class="nav-link" href="/prediction">Diagnose</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/records">My Data</a>
+          {% endif %}
+        </ul>
+        {% if user.is_authenticated %}
+        <ul class="navbar-nav ml-auto"> 
+          <li class="nav-item justify-content-end">
+            <form action="{% url 'logout' %}" method="post">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-dark">Log Out</button>
+            </form>
           </li>
         </ul>
+        {% endif %}
       </div>
     </nav>
     <div class="container">{% block content %} {% endblock %}</div>

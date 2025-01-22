@@ -4,7 +4,7 @@
   {% if user.is_authenticated %}
   Welcome {{ user.username }}!
   {% else %}
-  <p>You are not currently logged in.</p>
+  <em style="color:#d4353d">You are not currently logged in.</em>
   {% endif %}
   <p>This site is currently under construction. Come back later!</p>
 {% endblock %}
