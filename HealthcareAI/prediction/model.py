@@ -8,10 +8,13 @@ from sklearn.metrics import precision_recall_curve
 from sklearn.linear_model import LogisticRegression
 from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import train_test_split
+from django.conf import settings
 import pandas as pd
 import numpy as np
+import os
 
-data = pd.read_csv('heart.csv')
+csv_path = os.path.join(settings.BASE_DIR, "prediction", "heart.csv")
+data = pd.read_csv(csv_path)
 data.head()
 
 # converts our nominal values -> ordinal values
@@ -33,22 +36,31 @@ def model(classifier):
     # repeatedly input all training cases
     prediction = classifier.predict(x_test)
     cv = RepeatedStratifiedKFold(n_splits = 10,n_repeats = 3,random_state = 1)
-    print("Accuracy : ",'{0:.2%}'.format(accuracy_score(y_test,prediction)))
+    # print("Accuracy : ",'{0:.2%}'.format(accuracy_score(y_test,prediction)))
 
-# more iterations to ensure convergence
-classifier_lr = LogisticRegression(solver="lbfgs", max_iter=1000)
-model(classifier_lr)
+def predict(user_data):
+    # more iterations to ensure convergence
+    classifier_lr = LogisticRegression(solver="lbfgs", max_iter=1000)
+    model(classifier_lr)
+    # two ways of predicting, either give exact or get result
+    predicted_class = classifier_lr.predict(user_data)
+    predicted_proba = classifier_lr.predict_proba(user_data)
 
-# sample data - for testing
-sample_data = np.array([[24, 1, 0, 198, 0, 140, 0, 0, 2]])
+    if predicted_class == 1:
+        predicted_class = True
+    else:
+        predicted_class = False
 
-# two ways of predicting, either give exact or get result
-predicted_class = classifier_lr.predict(sample_data)
-predicted_proba = classifier_lr.predict_proba(sample_data)
-print(f"Probability of no heart failure: {predicted_proba[0][0]}")
-print(f"Probability of heart failure: {predicted_proba[0][1]}")
+    return [predicted_class, predicted_proba]
 
-if predicted_class == 1:
-    print("Heart failure predicted.")
-else:
-    print("Heart failure not predicted.")
+#sample_data = np.array([[24, 1, 0, 198, 0, 140, 0, 0, 2]])
+#result = predict(sample_data)
+#print(result)
+
+#print(f"Probability of no heart failure: {predicted_proba[0][0]}")
+#print(f"Probability of heart failure: {predicted_proba[0][1]}")
+
+#if predicted_class == 1:
+#    print("Heart failure predicted.")
+#else:
+#    print("Heart failure not predicted.")
